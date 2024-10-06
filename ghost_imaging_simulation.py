@@ -23,7 +23,7 @@ def ghost_image_step(sample: np.ndarray, intensity_expectation: float) -> np.nda
     return (intensity - intensity_expectation) * mask
 
 
-@numba.njit
+@numba.njit(parallel=True)
 def ghost_image(sample: np.ndarray, n: int) -> np.ndarray:
     """
     reconstruct the image after n intensity measurements
@@ -31,7 +31,7 @@ def ghost_image(sample: np.ndarray, n: int) -> np.ndarray:
     # the expectation value for the measured intensity is the sample + a uniformly gray mask
     intensity_expectation = (0.5 * sample).sum()
     result = np.zeros(sample.shape)
-    for _ in range(n):
+    for _ in numba.prange(n):
         result += ghost_image_step(sample, intensity_expectation)
     return result / n
 
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("input")
     parser.add_argument("-n", help="number of masks", default=50_000)
-    parser.add_argument("--fast", help="no live plotting", action="store_true", default=False)
+    parser.add_argument("--fast", help="run parallel, no live plotting", action="store_true", default=False)
     parser.add_argument("--out", help="filename for reconstructed image", default="reconstructed.bmp")
     args = parser.parse_args()
 
