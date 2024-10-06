@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib import image
 import matplotlib.pyplot as plt
 import numba
+import argparse
 
 
 def get_sample_image(path) -> np.array:
@@ -45,23 +46,27 @@ def ghost_image_liveplot(sample: np.ndarray, n: int) -> np.array:
     ax[0].imshow(sample, cmap="Greys_r")
     for i in range(n):
         result += ghost_image_step(sample, intensity_expectation)
-        if i % (n // 500) == 0 or i == n - 1:
+        if i % (n // min(n, 500)) == 0 or i == n - 1:
             ax[1].clear()
             ax[1].imshow(result / (i+1), cmap="Greys_r")
             ax[1].set_title(i)
-            plt.pause(0)
+            plt.pause(0.0001)
+    plt.savefig("result.png")
     plt.show()
     return result / n
 
 
 if __name__ == "__main__":
-    sample = get_sample_image("input.bmp")
-    n = 5_000
-    # result = ghost_image(sample, n)
-    result = ghost_image_liveplot(sample, n)
-    fig, axes = plt.subplots(nrows=1, ncols=2)
-    im1 = axes[0].imshow(sample, cmap="Greys_r")
-    im2 = axes[1].imshow(result, cmap="Greys_r")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input")
+    parser.add_argument("-n", help="number of masks", default=50_000)
+    parser.add_argument("--fast", help="no live plotting", action="store_true", default=False)
+    args = parser.parse_args()
+
+    sample = get_sample_image(args.input)
+    n = int(args.n)
+    if args.fast:
+        result = ghost_image(sample, n)
+    else:
+        result = ghost_image_liveplot(sample, n)
     plt.imsave("reconstructed.bmp", result, cmap="Greys_r")
-    plt.savefig("result.png")
-    plt.show()
