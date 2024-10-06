@@ -52,7 +52,7 @@ def ghost_image_liveplot(sample: np.ndarray, n: int) -> np.array:
             ax[1].imshow(result / (i+1), cmap="Greys_r")
             ax[1].set_title(f"reconstructed image (n={i+1})")
             plt.pause(0.0001)
-    plt.savefig("result.png")
+    plt.savefig("output/result.png")
     plt.show()
     return result / n
 
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     parser.add_argument("input")
     parser.add_argument("-n", help="number of masks", default=50_000)
     parser.add_argument("--fast", help="run parallel, no live plotting", action="store_true", default=False)
-    parser.add_argument("--out", help="filename for reconstructed image", default="reconstructed.bmp")
+    parser.add_argument("--out", help="filename for reconstructed image", default="output/reconstructed.bmp")
     args = parser.parse_args()
 
     sample = get_sample_image(args.input)
