@@ -44,12 +44,13 @@ def ghost_image_liveplot(sample: np.ndarray, n: int) -> np.array:
     result = np.zeros(sample.shape)
     fig, ax = plt.subplots(ncols=2)
     ax[0].imshow(sample, cmap="Greys_r")
+    ax[0].set_title("true image")
     for i in range(n):
         result += ghost_image_step(sample, intensity_expectation)
         if i % (n // min(n, 500)) == 0 or i == n - 1:
             ax[1].clear()
             ax[1].imshow(result / (i+1), cmap="Greys_r")
-            ax[1].set_title(i)
+            ax[1].set_title(f"reconstructed image (n={i+1})")
             plt.pause(0.0001)
     plt.savefig("result.png")
     plt.show()
