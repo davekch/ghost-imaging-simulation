@@ -61,6 +61,7 @@ if __name__ == "__main__":
     parser.add_argument("input")
     parser.add_argument("-n", help="number of masks", default=50_000)
     parser.add_argument("--fast", help="no live plotting", action="store_true", default=False)
+    parser.add_argument("--out", help="filename for reconstructed image", default="reconstructed.bmp")
     args = parser.parse_args()
 
     sample = get_sample_image(args.input)
@@ -69,4 +70,4 @@ if __name__ == "__main__":
         result = ghost_image(sample, n)
     else:
         result = ghost_image_liveplot(sample, n)
-    plt.imsave("reconstructed.bmp", result, cmap="Greys_r")
+    plt.imsave(args.out, result, cmap="Greys_r")
