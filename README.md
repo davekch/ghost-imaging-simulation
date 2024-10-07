@@ -30,7 +30,7 @@ options:
 ```bash
 python ghost_imaging_simulation.py input.bmp -n 1000000
 ```
-![](output/result.png)
+![](output/progress.gif)
 
 this is the reconstructed image using 10 million masks:
 
